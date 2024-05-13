@@ -1,18 +1,26 @@
 import { useEffect, useReducer } from 'react'
-import { ErrorMessage, Header, Loader, Main, StartScreen } from './components'
-import { Question } from './types'
+import {
+	ErrorMessage,
+	Header,
+	Loader,
+	Main,
+	Question,
+	StartScreen,
+} from './components'
+import { IQuestion } from './types'
+import { Action } from './types/action'
 
 type AppState = {
-	questions: Question[]
-	status: 'loading' | 'error' | 'ready'
+	questions: IQuestion[]
+	index: number
+	status: 'loading' | 'error' | 'ready' | 'active'
 }
 
-type Action =
-	| { type: 'dataReceived'; payload: Question[] }
-	| { type: 'loading' }
-	| { type: 'dataFailed' }
-
-const initialState: AppState = { questions: [], status: 'loading' }
+const initialState: AppState = {
+	questions: [],
+	status: 'loading',
+	index: 0,
+}
 
 function reducer(state: AppState, action: Action): AppState {
 	switch (action.type) {
@@ -22,13 +30,18 @@ function reducer(state: AppState, action: Action): AppState {
 			return { ...state, status: 'loading' }
 		case 'dataFailed':
 			return { ...state, status: 'error' }
+		case 'start':
+			return { ...state, status: 'active', index: 0 }
 		default:
 			throw new Error('Unknown action')
 	}
 }
 
 function App(): JSX.Element {
-	const [{ questions, status }, dispatch] = useReducer(reducer, initialState)
+	const [{ questions, status, index }, dispatch] = useReducer(
+		reducer,
+		initialState
+	)
 
 	const numQuestions = questions.length
 
@@ -50,7 +63,12 @@ function App(): JSX.Element {
 			<Main>
 				{status === 'loading' && <Loader />}
 				{status === 'error' && <ErrorMessage />}
-				{status === 'ready' && <StartScreen numQuestions={numQuestions} />}
+				{status === 'ready' && (
+					<StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+				)}
+				{status === 'active' && questions && (
+					<Question question={questions[index]} />
+				)}
 			</Main>
 		</div>
 	)
