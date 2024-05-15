@@ -6,3 +6,4 @@ export type Action =
 	| { type: 'dataFailed' }
 	| { type: 'setActive' }
 	| { type: 'start'; payload?: IQuestion }
+	| { type: 'newAnswer'; payload: number }

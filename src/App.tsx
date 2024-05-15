@@ -14,12 +14,16 @@ type AppState = {
 	questions: IQuestion[]
 	index: number
 	status: 'loading' | 'error' | 'ready' | 'active'
+	answer: number | null
+	points: number
 }
 
 const initialState: AppState = {
 	questions: [],
 	status: 'loading',
 	index: 0,
+	answer: null,
+	points: 0,
 }
 
 function reducer(state: AppState, action: Action): AppState {
@@ -32,13 +36,23 @@ function reducer(state: AppState, action: Action): AppState {
 			return { ...state, status: 'error' }
 		case 'start':
 			return { ...state, status: 'active', index: 0 }
+		case 'newAnswer':
+			const question = state.questions.at(state.index)
+			return {
+				...state,
+				answer: action.payload,
+				points:
+					action.payload === question?.correctOption
+						? state.points + question.points
+						: state.points,
+			}
 		default:
 			throw new Error('Unknown action')
 	}
 }
 
 function App(): JSX.Element {
-	const [{ questions, status, index }, dispatch] = useReducer(
+	const [{ questions, status, index, answer, points }, dispatch] = useReducer(
 		reducer,
 		initialState
 	)
@@ -67,7 +81,11 @@ function App(): JSX.Element {
 					<StartScreen numQuestions={numQuestions} dispatch={dispatch} />
 				)}
 				{status === 'active' && questions && (
-					<Question question={questions[index]} />
+					<Question
+						question={questions[index]}
+						dispatch={dispatch}
+						answer={answer}
+					/>
 				)}
 			</Main>
 		</div>

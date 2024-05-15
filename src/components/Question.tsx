@@ -1,16 +1,18 @@
 import { FC } from 'react'
-import { IQuestion } from '../types'
+import { Action, IQuestion } from '../types'
 import Options from './Options'
 
 interface QuestionProps {
 	question: IQuestion
+	dispatch: React.Dispatch<Action>
+	answer: number | null
 }
 
-const Question: FC<QuestionProps> = ({ question }) => {
+const Question: FC<QuestionProps> = ({ question, dispatch, answer }) => {
 	return (
 		<div>
 			<h4>{question.question}</h4>
-			<Options question={question} />
+			<Options question={question} dispatch={dispatch} answer={answer} />
 		</div>
 	)
 }
