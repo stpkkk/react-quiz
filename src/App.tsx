@@ -4,6 +4,7 @@ import {
 	Header,
 	Loader,
 	Main,
+	NextButton,
 	Question,
 	StartScreen,
 } from './components'
@@ -35,7 +36,7 @@ function reducer(state: AppState, action: Action): AppState {
 		case 'dataFailed':
 			return { ...state, status: 'error' }
 		case 'start':
-			return { ...state, status: 'active', index: 0 }
+			return { ...state, status: 'active', index: 0, answer: null }
 		case 'newAnswer':
 			const question = state.questions.at(state.index)
 			return {
@@ -46,6 +47,8 @@ function reducer(state: AppState, action: Action): AppState {
 						? state.points + question.points
 						: state.points,
 			}
+		case 'nextQuestion':
+			return { ...state, answer: null, index: state.index++ }
 		default:
 			throw new Error('Unknown action')
 	}
@@ -81,11 +84,16 @@ function App(): JSX.Element {
 					<StartScreen numQuestions={numQuestions} dispatch={dispatch} />
 				)}
 				{status === 'active' && questions && (
-					<Question
-						question={questions[index]}
-						dispatch={dispatch}
-						answer={answer}
-					/>
+					<>
+						<>
+							<Question
+								question={questions[index]}
+								dispatch={dispatch}
+								answer={answer}
+							/>
+						</>
+						<NextButton dispatch={dispatch} answer={answer} />
+					</>
 				)}
 			</Main>
 		</div>

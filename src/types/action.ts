@@ -7,3 +7,4 @@ export type Action =
 	| { type: 'setActive' }
 	| { type: 'start'; payload?: IQuestion }
 	| { type: 'newAnswer'; payload: number }
+	| { type: 'nextQuestion'; payload?: number }

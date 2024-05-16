@@ -6,6 +6,7 @@ import Main from './Main'
 import StartScreen from './StartScreen'
 import Question from './Question'
 import Options from './Options'
+import NextButton from './NextButton'
 
 export {
 	DateCounter,
@@ -16,4 +17,5 @@ export {
 	StartScreen,
 	Question,
 	Options,
+	NextButton,
 }
