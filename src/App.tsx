@@ -1,20 +1,22 @@
 import { useEffect, useReducer } from 'react'
 import {
 	ErrorMessage,
+	FinishScreen,
 	Header,
 	Loader,
 	Main,
 	NextButton,
+	Progress,
 	Question,
 	StartScreen,
 } from './components'
 import { IQuestion } from './types'
-import { Action } from './types/action'
+import { Action } from './types'
 
 type AppState = {
 	questions: IQuestion[]
 	index: number
-	status: 'loading' | 'error' | 'ready' | 'active'
+	status: 'loading' | 'error' | 'ready' | 'active' | 'finished'
 	answer: number | null
 	points: number
 }
@@ -49,6 +51,8 @@ function reducer(state: AppState, action: Action): AppState {
 			}
 		case 'nextQuestion':
 			return { ...state, answer: null, index: state.index++ }
+		case 'finished':
+			return { ...state, answer: null, index: state.index++ }
 		default:
 			throw new Error('Unknown action')
 	}
@@ -61,6 +65,7 @@ function App(): JSX.Element {
 	)
 
 	const numQuestions = questions.length
+	const totalPoints = questions.reduce((acc, q) => acc + q.points, 0)
 
 	useEffect(() => {
 		fetch('http://localhost:8000/questions')
@@ -86,6 +91,13 @@ function App(): JSX.Element {
 				{status === 'active' && questions && (
 					<>
 						<>
+							<Progress
+								points={points}
+								index={index}
+								totalPoints={totalPoints}
+								numQuestions={numQuestions}
+								answer={answer}
+							/>
 							<Question
 								question={questions[index]}
 								dispatch={dispatch}
@@ -94,6 +106,9 @@ function App(): JSX.Element {
 						</>
 						<NextButton dispatch={dispatch} answer={answer} />
 					</>
+				)}
+				{status === 'finished' && (
+					<FinishScreen points={points} totalPoints={totalPoints} />
 				)}
 			</Main>
 		</div>
