@@ -19,6 +19,7 @@ type AppState = {
 	status: 'loading' | 'error' | 'ready' | 'active' | 'finished'
 	answer: number | null
 	points: number
+	highscore: number
 }
 
 const initialState: AppState = {
@@ -27,6 +28,7 @@ const initialState: AppState = {
 	index: 0,
 	answer: null,
 	points: 0,
+	highscore: 0,
 }
 
 function reducer(state: AppState, action: Action): AppState {
@@ -51,18 +53,21 @@ function reducer(state: AppState, action: Action): AppState {
 			}
 		case 'nextQuestion':
 			return { ...state, answer: null, index: state.index++ }
-		case 'finished':
-			return { ...state, answer: null, index: state.index++ }
+		case 'finish':
+			return {
+				...state,
+				status: 'finished',
+				highscore:
+					state.points > state.highscore ? state.points : state.highscore,
+			}
 		default:
 			throw new Error('Unknown action')
 	}
 }
 
 function App(): JSX.Element {
-	const [{ questions, status, index, answer, points }, dispatch] = useReducer(
-		reducer,
-		initialState
-	)
+	const [{ questions, status, index, answer, points, highscore }, dispatch] =
+		useReducer(reducer, initialState)
 
 	const numQuestions = questions.length
 	const totalPoints = questions.reduce((acc, q) => acc + q.points, 0)
@@ -77,7 +82,7 @@ function App(): JSX.Element {
 			})
 			.then(data => dispatch({ type: 'dataReceived', payload: data }))
 			.catch(() => dispatch({ type: 'dataFailed' }))
-	}, [])
+	}, [dispatch])
 
 	return (
 		<div className='app'>
@@ -104,11 +109,20 @@ function App(): JSX.Element {
 								answer={answer}
 							/>
 						</>
-						<NextButton dispatch={dispatch} answer={answer} />
+						<NextButton
+							dispatch={dispatch}
+							answer={answer}
+							numQuestions={numQuestions}
+							index={index}
+						/>
 					</>
 				)}
 				{status === 'finished' && (
-					<FinishScreen points={points} totalPoints={totalPoints} />
+					<FinishScreen
+						points={points}
+						totalPoints={totalPoints}
+						highscore={highscore}
+					/>
 				)}
 			</Main>
 		</div>

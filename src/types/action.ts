@@ -8,4 +8,4 @@ export type Action =
 	| { type: 'start'; payload?: IQuestion }
 	| { type: 'newAnswer'; payload: number }
 	| { type: 'nextQuestion'; payload?: number }
-	| { type: 'finished' }
+	| { type: 'finish' }
