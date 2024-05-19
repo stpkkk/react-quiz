@@ -60,6 +60,8 @@ function reducer(state: AppState, action: Action): AppState {
 				highscore:
 					state.points > state.highscore ? state.points : state.highscore,
 			}
+		case 'restart':
+			return { ...initialState, questions: state.questions, status: 'ready' }
 		default:
 			throw new Error('Unknown action')
 	}
@@ -95,20 +97,18 @@ function App(): JSX.Element {
 				)}
 				{status === 'active' && questions && (
 					<>
-						<>
-							<Progress
-								points={points}
-								index={index}
-								totalPoints={totalPoints}
-								numQuestions={numQuestions}
-								answer={answer}
-							/>
-							<Question
-								question={questions[index]}
-								dispatch={dispatch}
-								answer={answer}
-							/>
-						</>
+						<Progress
+							points={points}
+							index={index}
+							totalPoints={totalPoints}
+							numQuestions={numQuestions}
+							answer={answer}
+						/>
+						<Question
+							question={questions[index]}
+							dispatch={dispatch}
+							answer={answer}
+						/>
 						<NextButton
 							dispatch={dispatch}
 							answer={answer}
@@ -122,6 +122,7 @@ function App(): JSX.Element {
 						points={points}
 						totalPoints={totalPoints}
 						highscore={highscore}
+						dispatch={dispatch}
 					/>
 				)}
 			</Main>

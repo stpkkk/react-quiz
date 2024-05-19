@@ -9,3 +9,4 @@ export type Action =
 	| { type: 'newAnswer'; payload: number }
 	| { type: 'nextQuestion'; payload?: number }
 	| { type: 'finish' }
+	| { type: 'restart' }
