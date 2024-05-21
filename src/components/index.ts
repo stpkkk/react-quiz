@@ -9,6 +9,8 @@ import Options from './Options'
 import NextButton from './NextButton'
 import Progress from './Progress'
 import FinishScreen from './FinishScreen'
+import Timer from './Timer'
+import Footer from './Footer'
 
 export {
 	DateCounter,
@@ -22,4 +24,6 @@ export {
 	NextButton,
 	Progress,
 	FinishScreen,
+	Timer,
+	Footer,
 }

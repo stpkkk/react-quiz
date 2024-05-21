@@ -2,6 +2,7 @@ import { useEffect, useReducer } from 'react'
 import {
 	ErrorMessage,
 	FinishScreen,
+	Footer,
 	Header,
 	Loader,
 	Main,
@@ -9,6 +10,7 @@ import {
 	Progress,
 	Question,
 	StartScreen,
+	Timer,
 } from './components'
 import { IQuestion } from './types'
 import { Action } from './types'
@@ -20,7 +22,10 @@ type AppState = {
 	answer: number | null
 	points: number
 	highscore: number
+	secondsRemaining: number | null
 }
+
+const SECONDS_PER_QUESTION = 30
 
 const initialState: AppState = {
 	questions: [],
@@ -29,6 +34,7 @@ const initialState: AppState = {
 	answer: null,
 	points: 0,
 	highscore: 0,
+	secondsRemaining: null,
 }
 
 function reducer(state: AppState, action: Action): AppState {
@@ -40,7 +46,11 @@ function reducer(state: AppState, action: Action): AppState {
 		case 'dataFailed':
 			return { ...state, status: 'error' }
 		case 'start':
-			return { ...state, status: 'active', index: 0, answer: null }
+			return {
+				...state,
+				status: 'active',
+				secondsRemaining: state.questions.length * SECONDS_PER_QUESTION,
+			}
 		case 'newAnswer':
 			const question = state.questions.at(state.index)
 			return {
@@ -62,14 +72,25 @@ function reducer(state: AppState, action: Action): AppState {
 			}
 		case 'restart':
 			return { ...initialState, questions: state.questions, status: 'ready' }
+		case 'tick':
+			return {
+				...state,
+				secondsRemaining: state.secondsRemaining && state.secondsRemaining - 1,
+				status:
+					state.secondsRemaining && state.secondsRemaining <= 0
+						? 'finished'
+						: state.status,
+			}
 		default:
 			throw new Error('Unknown action')
 	}
 }
 
 function App(): JSX.Element {
-	const [{ questions, status, index, answer, points, highscore }, dispatch] =
-		useReducer(reducer, initialState)
+	const [
+		{ questions, status, index, answer, points, highscore, secondsRemaining },
+		dispatch,
+	] = useReducer(reducer, initialState)
 
 	const numQuestions = questions.length
 	const totalPoints = questions.reduce((acc, q) => acc + q.points, 0)
@@ -85,6 +106,10 @@ function App(): JSX.Element {
 			.then(data => dispatch({ type: 'dataReceived', payload: data }))
 			.catch(() => dispatch({ type: 'dataFailed' }))
 	}, [dispatch])
+
+	useEffect(() => {
+		setTimeout(() => {}, 1000)
+	}, [])
 
 	return (
 		<div className='app'>
@@ -109,12 +134,15 @@ function App(): JSX.Element {
 							dispatch={dispatch}
 							answer={answer}
 						/>
-						<NextButton
-							dispatch={dispatch}
-							answer={answer}
-							numQuestions={numQuestions}
-							index={index}
-						/>
+						<Footer>
+							<NextButton
+								dispatch={dispatch}
+								answer={answer}
+								numQuestions={numQuestions}
+								index={index}
+							/>
+							<Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
+						</Footer>
 					</>
 				)}
 				{status === 'finished' && (

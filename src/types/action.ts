@@ -10,3 +10,4 @@ export type Action =
 	| { type: 'nextQuestion'; payload?: number }
 	| { type: 'finish' }
 	| { type: 'restart' }
+	| { type: 'tick' }
