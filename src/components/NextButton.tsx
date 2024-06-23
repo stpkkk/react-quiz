@@ -1,20 +1,7 @@
-import { FC } from 'react'
-import { Action } from '../types'
+import { useQuiz } from '../context'
 
-interface NextButtonProps {
-	dispatch: React.Dispatch<Action>
-	answer: number | null
-	numQuestions: number
-	index: number
-}
-
-const NextButton: FC<NextButtonProps> = ({
-	dispatch,
-	answer,
-	numQuestions,
-	index,
-}) => {
-	if (answer === null) return null
+const NextButton = () => {
+	const { answer, index, numQuestions, dispatch } = useQuiz()
 
 	function handleNextQuestion() {
 		dispatch({ type: 'nextQuestion' })
@@ -23,6 +10,8 @@ const NextButton: FC<NextButtonProps> = ({
 	function handleFinish() {
 		dispatch({ type: 'finish' })
 	}
+
+	if (answer === null) return null
 
 	if (index < numQuestions - 1) {
 		return (

@@ -1,20 +1,8 @@
-import { FC } from 'react'
+import { useQuiz } from '../context'
 
-interface ProgressProps {
-	points: number
-	index: number
-	totalPoints: number
-	numQuestions: number
-	answer: number | null
-}
+const Progress = () => {
+	const { numQuestions, index, answer, points, maxPossiblePoints } = useQuiz()
 
-const Progress: FC<ProgressProps> = ({
-	points,
-	index,
-	totalPoints,
-	numQuestions,
-	answer,
-}) => {
 	return (
 		<header className='progress'>
 			<progress max={numQuestions} value={index + Number(answer !== 0)} />
@@ -22,7 +10,7 @@ const Progress: FC<ProgressProps> = ({
 				Question <strong>{index + 1}</strong> / {numQuestions}
 			</p>
 			<p>
-				<strong>{points}</strong> / {totalPoints} points
+				<strong>{points}</strong> / {maxPossiblePoints} points
 			</p>
 		</header>
 	)

@@ -1,20 +1,8 @@
-import { FC } from 'react'
-import { Action } from '../types'
+import { useQuiz } from '../context'
 
-interface FinishScreenProps {
-	points: number
-	totalPoints: number
-	highscore: number
-	dispatch: React.Dispatch<Action>
-}
-
-const FinishScreen: FC<FinishScreenProps> = ({
-	points,
-	totalPoints,
-	highscore,
-	dispatch,
-}) => {
-	const percentage = (points / totalPoints) * 100
+const FinishScreen = () => {
+	const { points, maxPossiblePoints, highscore, dispatch } = useQuiz()
+	const percentage = (points / maxPossiblePoints) * 100
 
 	let emoji
 	if (percentage === 100) emoji = '🥇'
@@ -23,7 +11,7 @@ const FinishScreen: FC<FinishScreenProps> = ({
 	if (percentage >= 0 && percentage < 50) emoji = '🤔'
 	if (percentage === 0) emoji = '💩'
 
-	function handleRestart() {
+	function handleRestartQuiz() {
 		dispatch({ type: 'restart' })
 	}
 
@@ -31,10 +19,10 @@ const FinishScreen: FC<FinishScreenProps> = ({
 		<>
 			<p className='result'>
 				<span>{emoji}</span>You scored <strong>{points}</strong> out of{' '}
-				{totalPoints} ({Math.ceil(percentage)} %)
+				{maxPossiblePoints} ({Math.ceil(percentage)} %)
 			</p>
 			<p className='highscore'>(Highscore: {highscore} points)</p>
-			<button className='btn btn-ui' type='button' onClick={handleRestart}>
+			<button className='btn btn-ui' type='button' onClick={handleRestartQuiz}>
 				Restart Quiz
 			</button>
 		</>

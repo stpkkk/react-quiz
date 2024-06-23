@@ -1,18 +1,14 @@
-import { FC } from 'react'
-import { Action, IQuestion } from '../types'
+import { useQuiz } from '../context'
 import Options from './Options'
 
-interface QuestionProps {
-	question: IQuestion
-	dispatch: React.Dispatch<Action>
-	answer: number | null
-}
+const Question = () => {
+	const { questions, index } = useQuiz()
+	const question = questions[index]
 
-const Question: FC<QuestionProps> = ({ question, dispatch, answer }) => {
 	return (
 		<div>
 			<h4>{question.question}</h4>
-			<Options question={question} dispatch={dispatch} answer={answer} />
+			<Options question={question} />
 		</div>
 	)
 }

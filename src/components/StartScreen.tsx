@@ -1,12 +1,8 @@
-import { FC } from 'react'
-import { Action } from '../types'
+import { useQuiz } from '../context'
 
-interface StartScreenProps {
-	numQuestions: number
-	dispatch: React.Dispatch<Action>
-}
+const StartScreen = () => {
+	const { dispatch, numQuestions } = useQuiz()
 
-const StartScreen: FC<StartScreenProps> = ({ numQuestions, dispatch }) => {
 	function handleStart() {
 		dispatch({ type: 'start' })
 	}

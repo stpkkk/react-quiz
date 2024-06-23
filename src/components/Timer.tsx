@@ -1,12 +1,8 @@
-import { FC, useEffect } from 'react'
-import { Action } from '../types'
+import { useEffect } from 'react'
+import { useQuiz } from '../context'
 
-interface TimerProps {
-	secondsRemaining: number | null
-	dispatch: React.Dispatch<Action>
-}
-
-const Timer: FC<TimerProps> = ({ secondsRemaining, dispatch }) => {
+const Timer = () => {
+	const { secondsRemaining, dispatch } = useQuiz()
 	const effectiveSecondsRemaining = secondsRemaining ?? 0
 
 	const minutes = Math.floor(effectiveSecondsRemaining / 60)

@@ -1,15 +1,16 @@
 import { FC } from 'react'
-import { Action, IQuestion } from '../types'
+import { useQuiz } from '../context'
+import { IQuestion } from '../types'
 
-interface OptionsProps {
+type OptionsProps = {
 	question: IQuestion
-	dispatch: React.Dispatch<Action>
-	answer: number | null
 }
 
-const Options: FC<OptionsProps> = ({ question, dispatch, answer }) => {
+const Options: FC<OptionsProps> = ({ question }) => {
+	const { answer, dispatch } = useQuiz()
 	const hasAnswered = answer !== null
-	function handleSelect(i: number) {
+
+	function handleSelectAnswer(i: number) {
 		dispatch({ type: 'newAnswer', payload: i })
 	}
 
@@ -24,7 +25,7 @@ const Options: FC<OptionsProps> = ({ question, dispatch, answer }) => {
 								: 'wrong'
 							: ''
 					}`}
-					onClick={() => handleSelect(i)}
+					onClick={() => handleSelectAnswer(i)}
 					disabled={hasAnswered}
 					type='button'
 					key={o}
