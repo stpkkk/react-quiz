@@ -64,7 +64,14 @@ function reducer(state: AppState, action: Action): AppState {
 					state.points > state.highscore ? state.points : state.highscore,
 			}
 		case 'restart':
-			return { ...state, questions: state.questions, status: 'ready' }
+			return {
+				...state,
+				answer: null,
+				points: 0,
+				index: 0,
+				secondsRemaining: null,
+				status: 'ready',
+			}
 		case 'tick':
 			return {
 				...state,
