@@ -10,16 +10,11 @@ import {
 	Progress,
 	Question,
 	StartScreen,
-	Timer,
 } from './components'
 import { useQuiz } from './context'
 
 function App(): JSX.Element {
 	const { status } = useQuiz()
-
-	useEffect(() => {
-		setTimeout(() => {}, 1000)
-	}, [])
 
 	return (
 		<div className='app'>
@@ -34,7 +29,7 @@ function App(): JSX.Element {
 						<Question />
 						<Footer>
 							<NextButton />
-							<Timer />
+							{/* <Timer /> */}
 						</Footer>
 					</>
 				)}

@@ -3,13 +3,15 @@ import Options from './Options'
 
 const Question = () => {
 	const { questions, index } = useQuiz()
-	const question = questions[index]
+	const question = questions.at(index)
 
-	return (
+	return question ? (
 		<div>
 			<h4>{question.question}</h4>
 			<Options question={question} />
 		</div>
+	) : (
+		<div>No question loaded</div>
 	)
 }
 

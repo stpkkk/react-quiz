@@ -55,7 +55,7 @@ function reducer(state: AppState, action: Action): AppState {
 						: state.points,
 			}
 		case 'nextQuestion':
-			return { ...state, answer: null, index: state.index++ }
+			return { ...state, answer: null, index: state.index + 1 }
 		case 'finish':
 			return {
 				...state,
@@ -97,6 +97,8 @@ function QuizProvider({ children }: QuizProviderProps) {
 		dispatch,
 	] = useReducer(reducer, initialState)
 
+	console.log('status:', status)
+
 	const numQuestions = questions.length
 	const maxPossiblePoints = questions.reduce((acc, q) => acc + q.points, 0)
 
@@ -104,7 +106,11 @@ function QuizProvider({ children }: QuizProviderProps) {
 		async function fetchData() {
 			try {
 				const response = await axios.get('/api/questions')
-				dispatch({ type: 'dataReceived', payload: response.data.questions })
+
+				const data = await response.data.questions
+				console.log('data:', data)
+
+				dispatch({ type: 'dataReceived', payload: data })
 			} catch (error) {
 				dispatch({ type: 'dataFailed' })
 			}
