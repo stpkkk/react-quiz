@@ -9,6 +9,7 @@ import {
 	Progress,
 	Question,
 	StartScreen,
+	Timer,
 } from './components'
 import { useQuiz } from './context'
 
@@ -28,7 +29,7 @@ function App(): JSX.Element {
 						<Question />
 						<Footer>
 							<NextButton />
-							{/* <Timer /> */}
+							<Timer />
 						</Footer>
 					</>
 				)}
