@@ -5,13 +5,14 @@ import {
 	useEffect,
 	useReducer,
 } from 'react'
+import axios from 'axios'
 import { Action, IQuestion } from '../types'
 
-type QuizProviderProps = {
+interface QuizProviderProps {
 	children: ReactNode
 }
 
-type AppState = {
+interface AppState {
 	questions: IQuestion[]
 	index: number
 	status: 'loading' | 'error' | 'ready' | 'active' | 'finished'
@@ -21,14 +22,7 @@ type AppState = {
 	secondsRemaining: number | null
 }
 
-type QuizContextType = {
-	questions: IQuestion[]
-	index: number
-	status: 'loading' | 'error' | 'ready' | 'active' | 'finished'
-	answer: number | null
-	points: number
-	highscore: number
-	secondsRemaining: number | null
+interface QuizContextType extends AppState {
 	numQuestions: number
 	maxPossiblePoints: number
 	dispatch: React.Dispatch<Action>
@@ -107,15 +101,16 @@ function QuizProvider({ children }: QuizProviderProps) {
 	const maxPossiblePoints = questions.reduce((acc, q) => acc + q.points, 0)
 
 	useEffect(() => {
-		fetch('http://localhost:8000/questions')
-			.then(res => {
-				if (!res.ok) {
-					throw new Error('Network response was not ok')
-				}
-				return res.json()
-			})
-			.then(data => dispatch({ type: 'dataReceived', payload: data }))
-			.catch(() => dispatch({ type: 'dataFailed' }))
+		async function fetchData() {
+			try {
+				const response = await axios.get('/api/questions')
+				dispatch({ type: 'dataReceived', payload: response.data.questions })
+			} catch (error) {
+				dispatch({ type: 'dataFailed' })
+			}
+		}
+
+		fetchData()
 	}, [dispatch])
 
 	return (
