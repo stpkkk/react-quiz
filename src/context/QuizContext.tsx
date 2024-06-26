@@ -104,8 +104,6 @@ function QuizProvider({ children }: QuizProviderProps) {
 		dispatch,
 	] = useReducer(reducer, initialState)
 
-	console.log('status:', status)
-
 	const numQuestions = questions.length
 	const maxPossiblePoints = questions.reduce((acc, q) => acc + q.points, 0)
 
